@@ -31,7 +31,7 @@ Only 2 registers (other than the PC register) change value:
 
 Q7) register (?) counts down from (?) to (?)
 
-Q8) register (?) is modified to be the (?) of memory locations (?) and (?)
+Q8) the final value of register (?) is the (?) of memory locations (?) and (?)
 
 
 Part 2
