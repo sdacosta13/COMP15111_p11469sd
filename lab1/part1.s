@@ -7,6 +7,7 @@ loop	ADD	R0, R0, R1
 	SUB	R2, R2, R3
 	CMP	R2, R4
 	BNE	loop
+	STR	R0, tom
 	SVC	2
 jack	DEFW	3
 jill	DEFW	4
