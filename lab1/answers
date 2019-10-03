@@ -37,7 +37,7 @@ Q8) the final value of register R0 is the product of memory locations R1  and R2
 
 Part 2
 
-Q9) The memory location for "tom" turns red because i have changed the value of tom which was a static variable.
+Q9) The memory location for "tom" turns red because i have changed the value of tom which was a statically defined variable. This change is highlighted to me by komodo
 
 Q10) If you reset and run the program again without reloading it then what
-happens to the value of "tom" and why: The value of tom keeps holding the value i stored to it even when the program is re run. It must be recompiled to change it back
+happens to the value of "tom" and why: The value of tom keeps holding the value i stored to it even when the program is re run. It must be recompiled to change it back. The DEFW command has been overridden
