@@ -12,8 +12,13 @@ next				; while (true) { //The { is just to ease readability, python does not us
 	SVC	1		; input a character to R0
 
 	; if R0 == 10 do: // translate to ARM code
+	CMP R0, #10
 
-	ADR	R0, goodbye 	;   printf(" and good-bye!")
+	
+	BEQ quit
+	SVC	0
+	B	next
+quit	ADR	R0, goodbye 	;   printf(" and good-bye!")
 	SVC	3
 	SVC  	2		;   stop the program
 
