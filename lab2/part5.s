@@ -47,6 +47,7 @@ lStart	ADD R7, R7, #1
 	ADR R0, are
 	SVC 3
 	MOV R0, R7 ;make sure this will work!
+	ADD R0, R0, #1
 	SVC 4
 	ADR R0, this
 	SVC 3

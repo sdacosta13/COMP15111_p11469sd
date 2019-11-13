@@ -1,5 +1,5 @@
 KMD
-00000000: EA000054    ;         B part2 ; part1 or part2 or part3
+00000000: EA00007E    ;         B part3 ; part1 or part2 or part3
 00000004:             ; 
 00000004: 00 00 00 00 ; buffer  DEFS 100,0
 00000008: 00 00 00 00 ; 
@@ -92,96 +92,106 @@ KMD
 000000FC: E1A0F00E    ;         MOV  PC, LR
 00000100:             ; 
 00000100:             ; ;************************** part 3 **************************
-00000100: E58FE000    ; sorted  STR LR, return2 ; given
-00000104:             ; ; your code goes here
-00000104: E51FF004    ;         LDR  PC, return2 ; given
-00000108: 00000000    ; return2 DEFW 0          ; given
-0000010C:             ; 
-0000010C:             ; ;*********************** the various parts ********************
-0000010C: E24F10AC    ; part1   ADR R1, s1
-00000110: EBFFFFE4    ;         BL  printstring
-00000114: E24F10B0    ;         ADR R1, s2
-00000118: EBFFFFE2    ;         BL  printstring
-0000011C: E24F10B4    ;         ADR R1, s3
-00000120: EBFFFFE0    ;         BL  printstring
-00000124: E24F10B4    ;         ADR R1, s4
-00000128: EBFFFFDE    ;         BL  printstring
-0000012C: E24F10B4    ;         ADR R1, s5
-00000130: EBFFFFDC    ;         BL  printstring
-00000134: E24F10B4    ;         ADR R1, s6
+00000100: E58FE028    ; sorted  STR LR, return2 ; given
+00000104:             ; 
+00000104: E4D24001    ; lStart  LDRB R4, [R2],#1; your code goes here
+00000108: E4D35001    ;         LDRB R5, [R3],#1;
+0000010C: E3540000    ;         CMP R4, #0
+00000110: 0A000004    ;         BEQ exit
+00000114: E3550000    ;         CMP R5, #0
+00000118: 0A000002    ;         BEQ exit
+0000011C: E1540005    ;         CMP R4, R5
+00000120: 1A000000    ;         BNE exit
+00000124: EAFFFFF6    ;         B lStart
+00000128: E1540005    ; exit    CMP R4, R5      
+0000012C: E51FF004    ;         LDR  PC, return2 ; given
+00000130: 00000000    ; return2 DEFW 0          ; given
+00000134:             ; 
+00000134:             ; ;*********************** the various parts ********************
+00000134: E24F10D4    ; part1   ADR R1, s1
 00000138: EBFFFFDA    ;         BL  printstring
-0000013C: E24F10B8    ;         ADR R1, s7
+0000013C: E24F10D8    ;         ADR R1, s2
 00000140: EBFFFFD8    ;         BL  printstring
-00000144: E24F10B8    ;         ADR R1, s8
+00000144: E24F10DC    ;         ADR R1, s3
 00000148: EBFFFFD6    ;         BL  printstring
-0000014C: E24F10B4    ;         ADR R1, s9
+0000014C: E24F10DC    ;         ADR R1, s4
 00000150: EBFFFFD4    ;         BL  printstring
-00000154: EF000002    ;         SVC 2
-00000158:             ; 
-00000158: E24F20F8    ; part2   ADR R2, s1
-0000015C: E24F1E16    ;         ADR R1, buffer
-00000160: EBFFFFE1    ;         BL  strcpy
-00000164: E24F1F5A    ;         ADR R1, buffer
+00000154: E24F10DC    ;         ADR R1, s5
+00000158: EBFFFFD2    ;         BL  printstring
+0000015C: E24F10DC    ;         ADR R1, s6
+00000160: EBFFFFD0    ;         BL  printstring
+00000164: E24F10E0    ;         ADR R1, s7
 00000168: EBFFFFCE    ;         BL  printstring
-0000016C: E24F2F42    ;         ADR R2, s2
-00000170: E24F1F5D    ;         ADR R1, buffer
-00000174: EBFFFFD3    ;         BL  strcat
-00000178: E24F1F5F    ;         ADR R1, buffer
-0000017C: EBFFFFC9    ;         BL  printstring
-00000180: E24F2F46    ;         ADR R2, s3
+0000016C: E24F10E0    ;         ADR R1, s8
+00000170: EBFFFFCC    ;         BL  printstring
+00000174: E24F10DC    ;         ADR R1, s9
+00000178: EBFFFFCA    ;         BL  printstring
+0000017C: EF000002    ;         SVC 2
+00000180:             ; 
+00000180: E24F2E12    ; part2   ADR R2, s1
 00000184: E24F1F62    ;         ADR R1, buffer
-00000188: EBFFFFCE    ;         BL  strcat
+00000188: EBFFFFD7    ;         BL  strcpy
 0000018C: E24F1E19    ;         ADR R1, buffer
 00000190: EBFFFFC4    ;         BL  printstring
-00000194: EF000002    ;         SVC 2
-00000198:             ; 
-00000198:             ; ; used by part3
-00000198: 00000000    ; return4 DEFW 0,0
-0000019C: 00000000    ; 
-000001A0: E50FE010    ; test2   STR LR, return4         ; This mechanism will be improved later
-000001A4: E50F3010    ;         STR R3, return4+4       ; Assembler will evaluate addition      
-000001A8: E1A00002    ;         MOV R0, R2
-000001AC: EF000003    ;         SVC 3
-000001B0: EBFFFFD2    ;         BL  sorted
-000001B4: B3A0003C    ;         MOVLT R0, #'<'          ; Three-way IF using conditions
-000001B8: 03A0003D    ;         MOVEQ R0, #'='
-000001BC: C3A0003E    ;         MOVGT R0, #'>'
-000001C0: EF000000    ;         SVC 0
-000001C4: E51F0030    ;         LDR R0, return4+4
-000001C8: EF000003    ;         SVC 3
-000001CC: E3A0000A    ;         MOV R0, #10
-000001D0: EF000000    ;         SVC 0
-000001D4: E51FF044    ;         LDR PC, return4
-000001D8:             ; 
-000001D8: E24F2F5E    ; part3   ADR R2, s1
-000001DC: E24F3F5E    ;         ADR R3, s2
-000001E0: EBFFFFEE    ;         BL  test2
-000001E4: E24F2D06    ;         ADR R2, s2
-000001E8: E24F3D06    ;         ADR R3, s3
-000001EC: EBFFFFEB    ;         BL  test2
-000001F0: E24F2F62    ;         ADR R2, s3
-000001F4: E24F3F61    ;         ADR R3, s4
-000001F8: EBFFFFE8    ;         BL  test2
-000001FC: E24F2F63    ;         ADR R2, s4
-00000200: E24F3F62    ;         ADR R3, s5
-00000204: EBFFFFE5    ;         BL  test2
-00000208: E24F2E19    ;         ADR R2, s5
-0000020C: E24F3F63    ;         ADR R3, s6
-00000210: EBFFFFE2    ;         BL  test2
-00000214: E24F2F65    ;         ADR R2, s6
-00000218: E24F3F65    ;         ADR R3, s7
-0000021C: EBFFFFDF    ;         BL  test2
-00000220: E24F2F67    ;         ADR R2, s7
-00000224: E24F3F66    ;         ADR R3, s8
-00000228: EBFFFFDC    ;         BL  test2
-0000022C: E24F2E1A    ;         ADR R2, s8
-00000230: E24F3F66    ;         ADR R3, s9
-00000234: EBFFFFD9    ;         BL  test2
-00000238: E24F2F6B    ;         ADR R2, s8
-0000023C: E24F3E1B    ;         ADR R3, s8
-00000240: EBFFFFD6    ;         BL  test2
-00000244: EF000002    ;         SVC 2
-00000248:             ; 
+00000194: E24F2E13    ;         ADR R2, s2
+00000198: E24F1F67    ;         ADR R1, buffer
+0000019C: EBFFFFC9    ;         BL  strcat
+000001A0: E24F1F69    ;         ADR R1, buffer
+000001A4: EBFFFFBF    ;         BL  printstring
+000001A8: E24F2D05    ;         ADR R2, s3
+000001AC: E24F1E1B    ;         ADR R1, buffer
+000001B0: EBFFFFC4    ;         BL  strcat
+000001B4: E24F1F6E    ;         ADR R1, buffer
+000001B8: EBFFFFBA    ;         BL  printstring
+000001BC: EF000002    ;         SVC 2
+000001C0:             ; 
+000001C0:             ; ; used by part3
+000001C0: 00000000    ; return4 DEFW 0,0
+000001C4: 00000000    ; 
+000001C8: E50FE010    ; test2   STR LR, return4         ; This mechanism will be improved later
+000001CC: E50F3010    ;         STR R3, return4+4       ; Assembler will evaluate addition      
+000001D0: E1A00002    ;         MOV R0, R2
+000001D4: EF000003    ;         SVC 3
+000001D8: EBFFFFC8    ;         BL  sorted
+000001DC: B3A0003C    ;         MOVLT R0, #'<'          ; Three-way IF using conditions
+000001E0: 03A0003D    ;         MOVEQ R0, #'='
+000001E4: C3A0003E    ;         MOVGT R0, #'>'
+000001E8: EF000000    ;         SVC 0
+000001EC: E51F0030    ;         LDR R0, return4+4
+000001F0: EF000003    ;         SVC 3
+000001F4: E3A0000A    ;         MOV R0, #10
+000001F8: EF000000    ;         SVC 0
+000001FC: E51FF044    ;         LDR PC, return4
+00000200:             ; 
+00000200: E24F2E1A    ; part3   ADR R2, s1
+00000204: E24F3E1A    ;         ADR R3, s2
+00000208: EBFFFFEE    ;         BL  test2
+0000020C: E24F2F6A    ;         ADR R2, s2
+00000210: E24F3F6A    ;         ADR R3, s3
+00000214: EBFFFFEB    ;         BL  test2
+00000218: E24F2E1B    ;         ADR R2, s3
+0000021C: E24F3F6B    ;         ADR R3, s4
+00000220: EBFFFFE8    ;         BL  test2
+00000224: E24F2F6D    ;         ADR R2, s4
+00000228: E24F3E1B    ;         ADR R3, s5
+0000022C: EBFFFFE5    ;         BL  test2
+00000230: E24F2F6E    ;         ADR R2, s5
+00000234: E24F3F6D    ;         ADR R3, s6
+00000238: EBFFFFE2    ;         BL  test2
+0000023C: E24F2F6F    ;         ADR R2, s6
+00000240: E24F3F6F    ;         ADR R3, s7
+00000244: EBFFFFDF    ;         BL  test2
+00000248: E24F2F71    ;         ADR R2, s7
+0000024C: E24F3D07    ;         ADR R3, s8
+00000250: EBFFFFDC    ;         BL  test2
+00000254: E24F2F72    ;         ADR R2, s8
+00000258: E24F3D07    ;         ADR R3, s9
+0000025C: EBFFFFD9    ;         BL  test2
+00000260: E24F2F75    ;         ADR R2, s8
+00000264: E24F3F76    ;         ADR R3, s8
+00000268: EBFFFFD6    ;         BL  test2
+0000026C: EF000002    ;         SVC 2
+00000270:             ; 
 
 Symbol Table: Labels
 : buffer                            00000004  Local -- ARM
@@ -201,9 +211,11 @@ Symbol Table: Labels
 : return                            000000D8  Local -- ARM
 : strcpy                            000000EC  Local -- ARM
 : sorted                            00000100  Local -- ARM
-: return2                           00000108  Local -- ARM
-: part1                             0000010C  Local -- ARM
-: part2                             00000158  Local -- ARM
-: return4                           00000198  Local -- ARM
-: test2                             000001A0  Local -- ARM
-: part3                             000001D8  Local -- ARM
+: lStart                            00000104  Local -- ARM
+: exit                              00000128  Local -- ARM
+: return2                           00000130  Local -- ARM
+: part1                             00000134  Local -- ARM
+: part2                             00000180  Local -- ARM
+: return4                           000001C0  Local -- ARM
+: test2                             000001C8  Local -- ARM
+: part3                             00000200  Local -- ARM

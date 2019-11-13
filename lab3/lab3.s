@@ -61,7 +61,17 @@ strcpy
 
 ;************************** part 3 **************************
 sorted	STR LR, return2	; given
-; your code goes here
+
+lStart	LDRB R4, [R2],#1; your code goes here
+	LDRB R5, [R3],#1;
+	CMP R4, #0
+	BEQ exit
+	CMP R5, #0
+	BEQ exit
+	CMP R4, R5
+	BNE exit
+	B lStart
+exit	CMP R4, R5	
 	LDR  PC, return2 ; given
 return2 DEFW 0		; given
 
